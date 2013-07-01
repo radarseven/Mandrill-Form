@@ -1,1 +1,5 @@
+# Mac dotfiles
+.DS_Store
+
+# Sublime Text dotfiles
 *.sublime*
