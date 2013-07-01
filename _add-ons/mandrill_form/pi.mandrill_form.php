@@ -3,11 +3,13 @@
 /**
  * Require plugin helper
  */
+
 require_once( 'pluginhelper.php' );
 
 /**
  * Require Mandrill API class
  */
+
 require_once( 'lib/Mandrill.php' );
 
 class Plugin_mandrill_form extends Plugin {
@@ -16,9 +18,10 @@ class Plugin_mandrill_form extends Plugin {
 	 * Meta data
 	 * @var array
 	 */
+
 	public $meta = array(
 		'name'				=> 'Mandrill Form',
-		'version'			=> '0.3',
+		'version'			=> '0.5',
 		'author'			=> 'Chad Clark | The cRUSHer',
 		'author_url'		=> 'http://chadjclark.com/ | http://thecrusherbynight.com'
 	);
@@ -27,6 +30,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * Index
 	 * @return string [description]
 	 */
+
 	public function index() {
 
 		/**

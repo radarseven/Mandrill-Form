@@ -8,6 +8,7 @@ class PluginHelper
 	 * @param  array
 	 * @return boolean
 	 */
+	
 	public static function isPost()
 	{
 		/**
@@ -28,6 +29,7 @@ class PluginHelper
 	 * @param  array       Raw $_POST array
 	 * @return array       Filtered $_POST array
 	 */
+	
 	public static function filterPost( $post = null )
 	{
 		$post = is_null( $post ) ? $_POST : $post;
@@ -68,6 +70,7 @@ class PluginHelper
 	 * @param  array $arr
 	 * @return (array)      Array with replace values
 	 */
+	
 	public static function replaceDashes( $arr = null )
 	{
 		if( is_null( $arr ) || ! is_array( $arr ) )
@@ -93,6 +96,7 @@ class PluginHelper
 	 * @param (array) $params Tag params
 	 * @return (array)
 	 */
+	
 	public static function pipedStringToArray( $string )
 	{
 		if( ! is_string( $string ) || is_array( $string ) )
