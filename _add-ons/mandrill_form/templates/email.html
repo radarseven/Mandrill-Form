@@ -1,0 +1,30 @@
+<h1>Wedding RSVP!</h1>
+
+*|IF:attending=No|*
+
+	<p><strong>*|not_attending_name|*</strong></p>
+	<p>Attending: <strong>*|attending|*</strong></p>
+
+*|ELSE:|*
+
+	<p><strong>*|guest|*</strong></p>
+	<p>Attending: <strong>*|attending|*</strong></p>
+
+	*|IFNOT:GUEST_1|*
+		<p><strong>No Guests</strong></p>
+	*|ELSE:|*
+		<strong>Guests</strong>
+		<ul>
+			*|IF:GUEST_1|*<li>*|GUEST_1|*</li>*|END:IF|*
+			*|IF:GUEST_2|*<li>*|GUEST_2|*</li>*|END:IF|*
+			*|IF:GUEST_3|*<li>*|GUEST_3|*</li>*|END:IF|*
+			*|IF:GUEST_4|*<li>*|GUEST_4|*</li>*|END:IF|*
+			*|IF:GUEST_5|*<li>*|GUEST_5|*</li>*|END:IF|*
+			*|IF:GUEST_6|*<li>*|GUEST_6|*</li>*|END:IF|*
+		</ul>
+	*|END:IF|*
+
+*|END:IF|*
+
+
+

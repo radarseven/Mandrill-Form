@@ -1,0 +1,20 @@
+Wedding RSVP!
+
++--------------------------------------+
+*|IF:attending=No|*
+*|not_attending_name|*Attending: *|attending|*
+*|ELSE:|*
+*|guest|*
+Attending: *|attending|*
+*|IFNOT:GUEST_1|*
+No Guests
+*|ELSE:|*
+Guests:
+*|IF:GUEST_1|*- *|GUEST_1|**|END:IF|*
+*|IF:GUEST_2|*- *|GUEST_2|**|END:IF|*
+*|IF:GUEST_3|*- *|GUEST_3|**|END:IF|*
+*|IF:GUEST_4|*- *|GUEST_4|**|END:IF|*
+*|IF:GUEST_5|*- *|GUEST_5|**|END:IF|*
+*|IF:GUEST_6|*- *|GUEST_6|**|END:IF|*
+*|END:IF|*
+*|END:IF|*

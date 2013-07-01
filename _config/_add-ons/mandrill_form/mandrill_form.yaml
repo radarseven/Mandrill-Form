@@ -1,0 +1,52 @@
+# -----------------------------------------------------------------------------
+# Default Mandrill Form Settings
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Mandrill API Key
+# -----------------------------------------------------------------------------
+api_key: Ivn9sAUv1Bp6hR0x2t5-8A
+
+# -----------------------------------------------------------------------------
+# File path to email templates, relatve to the site root
+# -----------------------------------------------------------------------------
+file_path: _themes/mandrill_form/
+
+# -----------------------------------------------------------------------------
+# Default fallback email options
+# @note These can be overriden in the template tag parameters
+# -----------------------------------------------------------------------------
+email_options:
+  # to_email: chadjclark@gmail.com
+  to_email: chadjclark@gmail.com
+  to_name: Chad Clark
+  from_email: hello@bluthandbailey.com
+  from_name: WeddingBot 3000
+  subject: RSVP Response Booyah!
+  cc:
+  bcc:
+  msg_header:
+  msg_footer:
+  use_merge_vars: true
+
+
+# -----------------------------------------------------------------------------
+# Default form options
+# @note These can be overriden in the template tag parameters
+# -----------------------------------------------------------------------------
+form_attributes:
+  id:
+  class:
+
+# -----------------------------------------------------------------------------
+# Silly Spamllers
+# -----------------------------------------------------------------------------
+enable_spam_killah: true
+  
+# -----------------------------------------------------------------------------
+# Default email templates
+# @note These can be overriden in the template tag parameters
+# -----------------------------------------------------------------------------
+email_templates:
+  plain_text: email.txt
+  html: email.html
