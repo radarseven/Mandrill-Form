@@ -7,14 +7,13 @@
 	bcc=""
 	from_email="test@test.com"
 	from_name="Mandril Formm Test"
-	msg_header=""
-	msg_footer=""
 	subject="Mandrill Form Test"
 	form_id="mandrill-form"
 	form_class=""
 	html_template="email.html"
 	plain_text_template="email.txt"
-	required_fields=""
+	required_fields="first_name|last_name"
+	required_fields_messages="First Name is a required field."
 	use_merge_vars="1"
 	send_user_email="false"
 	user_email_template_plain_text=""
@@ -23,6 +22,7 @@
 	spam_killah_redirect=""
 	success_redirect=""
 	error_redirect=""
+	enable_logging="true"
 }}
 
 	{{ if error }}
@@ -43,19 +43,19 @@
 	<fieldset>
 		<p>
 			<label for="first_name">First Name</label>
-			<input type="text" name="first_name" />
+			<input type="text" name="first_name" value="{{ post }}{{ first_name }}{{ /post }}" />
 		</p>
 		<p>
 			<label for="last_name">Last Name</label>
-			<input type="text" name="last_name" />
+			<input type="text" name="last_name" value="{{ post }}{{ last_name }}{{ /post }}" />
 		</p>
 		<p>
 			<label for="email">Email Address</label>
-			<input type="email" name="email" />
+			<input type="email" name="email" value="{{ post }}{{ email }}{{ /post }}" />
 		</p>
 		<p>
 			<label for="message">Message</label>
-			<textarea name="message" id="message" cols="30" rows="10"></textarea>
+			<textarea name="message" id="message" cols="30" rows="10">{{ post }}{{ message }}{{ /post }}</textarea>
 		</p>
 		<p>
 			<input type="submit" name="submit" value="Submit" />

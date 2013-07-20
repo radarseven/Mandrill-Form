@@ -1,6 +1,6 @@
 <?php
 
-class PluginHelper
+class PluginHelper extends Plugin_mandrill_form
 {
 
 	/**
@@ -25,12 +25,12 @@ class PluginHelper
 	}
 
 	/**
-	 * Filter POST array and return array with no empty values.
+	 * Get POST array and return array with no empty values.
 	 * @param  array       Raw $_POST array
 	 * @return array       Filtered $_POST array
 	 */
 	
-	public static function filterPost( $post = null )
+	public static function getPost( $post = null )
 	{
 		$post = is_null( $post ) ? $_POST : $post;
 
@@ -110,6 +110,29 @@ class PluginHelper
 			return $array;
 		}
 
-		return $string;
+		return array( $string );
 	}
+
+	/**
+	 * Simple vaidation method
+	 * @param  mixed  $data Data to validate
+	 * @return boolean
+	 */
+	public static function isValid( $data )
+	{
+		switch( true )
+		{
+			case empty( $data ):
+			case is_null( $data ):
+			case false:
+			case 0:
+			case '':
+				return false;
+				break;
+			default:
+				return true;
+				break;
+		}
+	}
+	
 }
