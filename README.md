@@ -1,5 +1,5 @@
 # Mandrill Form - Statamic Plug-In
-A simple plug-in for [Statamic](http://statamic.com) CMS to enable users to easily create an email form using the [Mandrill](http://mandrillapp.com) API for email delivery.
+A simple plug-in for [Statamic](http://statamic.com) CMS to enable users to easily create an simple form, send an email to a configurable email address using the [Mandrill](http://mandrillapp.com) API for email delivery.
 
 This is a work in progres. Feel free to fork and fix bugs if found!
 
@@ -34,9 +34,6 @@ This is a work in progres. Feel free to fork and fix bugs if found!
 * `required_fields` (string)
 * `required_fields` (string)
 * `use_merge_vars` (bool)
-* `send_user_email` (bool)[planned]
-* `user_email_template_plain_text` (string)[planned]
-* `user_email_template_html` (string)[planned]
 * `enable_spam_killah` (bool)
 * `spam_killah_redirect` (string)
 * `success_redirect` (string)
@@ -120,8 +117,8 @@ The plug-in will automatically log (2) types of datasets for you:
 2. __POST data for each form submission in CSV format__: By default, this will be stored default in the `_logs` directory in a file with the same name as the form. For example, if the parameter `form_name=sample` in the tag pair, a file named `sample.csv` will be created in `_logs`. New form submissions will be appended to this file. If you choose to clear this file, you could simply delete or move it out of the `_logs` directory and the file will be created again on the next form submission.
 
 ## Changelog
-### v1.0
 ### v0.9
+* Initial public release. Rewrote most of the plugin.
 ### v0.6
 * Can pre-populate input fields on error with the {{ post }}{{ /post }} tag pair, i.e. {{ post }}{{ email }}{{ /post }} would repopulate the input field named `email`.
 

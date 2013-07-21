@@ -12,8 +12,8 @@
 	form_class=""
 	html_template="email.html"
 	plain_text_template="email.txt"
-	required_fields="first_name|last_name"
-	required_fields_messages="First Name is a required field."
+	required_fields="first_name|last_name|options"
+	required_fields_messages="First Name is a required field.|Last Name is a required field.|Please select an option."
 	use_merge_vars="1"
 	send_user_email="false"
 	user_email_template_plain_text=""
@@ -56,6 +56,16 @@
 		<p>
 			<label for="message">Message</label>
 			<textarea name="message" id="message" cols="30" rows="10">{{ post }}{{ message }}{{ /post }}</textarea>
+		</p>
+		<p>
+			<select name="options" id="options">
+				<option value="">Please select an option</option>
+				<option value="1">One</option>
+				<option value="2">Two</option>
+				<option value="3">Three</option>
+				<option value="4">Four</option>
+				<option value="5">Five</option>
+			</select>
 		</p>
 		<p>
 			<input type="submit" name="submit" value="Submit" />

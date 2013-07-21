@@ -1,14 +1,12 @@
 <?php
 
-class PluginHelper extends Plugin_mandrill_form
+class Mandrill_form_plugin_helper extends Plugin_mandrill_form
 {
-
 	/**
 	 * Check if request is a POST request
 	 * @param  array
 	 * @return boolean
 	 */
-	
 	public static function isPost()
 	{
 		/**
@@ -24,6 +22,7 @@ class PluginHelper extends Plugin_mandrill_form
 		}
 	}
 
+
 	/**
 	 * Get POST array and return array with no empty values.
 	 * @param  array       Raw $_POST array
@@ -34,7 +33,7 @@ class PluginHelper extends Plugin_mandrill_form
 	{
 		$post = is_null( $post ) ? $_POST : $post;
 
-		if( ! PluginHelper::isNotEmptyArray( $post ) )
+		if( ! self::isNotEmptyArray( $post ) )
 		{
 			return FALSE;
 		}
@@ -53,6 +52,12 @@ class PluginHelper extends Plugin_mandrill_form
 		return $post;
 	}
 
+
+	/**
+	 * Check if an array is empty
+	 * @param  [mixed]  $array 
+	 * @return boolean
+	 */
 	public static function isNotEmptyArray( $array )
 	{
 		if( is_array( $array ) && ! Helper::isEmptyArray( $array ) )
@@ -65,12 +70,12 @@ class PluginHelper extends Plugin_mandrill_form
 		}
 	}
 
+
 	/**
 	 * Replace dashes with underscores in an array
 	 * @param  array $arr
 	 * @return (array)      Array with replace values
 	 */
-	
 	public static function replaceDashes( $arr = null )
 	{
 		if( is_null( $arr ) || ! is_array( $arr ) )
@@ -89,6 +94,7 @@ class PluginHelper extends Plugin_mandrill_form
 
 	    return $arr;
 	}
+
 
 	/**
 	 * Converted a pipe delimited string to an array
@@ -113,6 +119,7 @@ class PluginHelper extends Plugin_mandrill_form
 		return array( $string );
 	}
 
+
 	/**
 	 * Simple vaidation method
 	 * @param  mixed  $data Data to validate
@@ -134,5 +141,7 @@ class PluginHelper extends Plugin_mandrill_form
 				break;
 		}
 	}
-	
 }
+/**
+ * End of file.
+ */
