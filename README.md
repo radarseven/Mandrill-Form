@@ -12,8 +12,16 @@ This is a work in progres. Feel free to fork and fix bugs if found!
 * Copy `_config/_add-ons/mandrill_form` to into `_add-ons` in the document root of your Statamic site.
 * Copy `_themes/mandrill_form` to into `_themes` in the document root of your Statamic site.
 
+## Config
+Set your Mandrill API key in the plugin config at `_config/add-ons/mandrill_form/mandrill_form.yaml`.
+
+Other config values are a fallback, but can be overrident by the template tag pair parameters below.
+
 ## Template Tags
 * `mandrill_form`
+* `success`
+* `error`
+* `errors`
 
 ## Template Tag Parameters
 ### `mandrill_form`
@@ -38,6 +46,12 @@ This is a work in progres. Feel free to fork and fix bugs if found!
 * `spam_killah_redirect` (string)
 * `success_redirect` (string)
 * `error_redirect` (string)
+### `success` (boolean)
+This is a boolean based on status of the Mandril API request.
+### `error` (boolean)
+If API call failed or required fields failed, this will be set to true.
+### `errors`
+If `error` is true, `errors` will contain messages for failed validations or the API failure message.
 
 ## Usage Examples
 
@@ -46,20 +60,19 @@ This is a simple sample of the `mandrill_form` tag pair:
     <h1>Mandrill Form Sample Template</h1>
     {{ mandrill_form
         form_name="sample"
-        to_email="mreiner77@gmail.com"
+        to_email="test@test.com"
         to_name="Testing"
         cc=""
         bcc=""
         from_email="test@test.com"
         from_name="Mandril Formm Test"
-        msg_header=""
-        msg_footer=""
         subject="Mandrill Form Test"
         form_id="mandrill-form"
         form_class=""
         html_template="email.html"
         plain_text_template="email.txt"
-        required_fields=""
+        required_fields="first_name|last_name|options"
+        required_fields_messages="First Name is a required field.|Last Name is a required field.|Please select an option."
         use_merge_vars="1"
         send_user_email="false"
         user_email_template_plain_text=""
@@ -68,8 +81,9 @@ This is a simple sample of the `mandrill_form` tag pair:
         spam_killah_redirect=""
         success_redirect=""
         error_redirect=""
+        enable_logging="true"
     }}
-        {{# Error checking #}}
+
         {{ if error }}
             <h1>Whoops, there were errors!</h1>
             <ul>
@@ -78,28 +92,39 @@ This is a simple sample of the `mandrill_form` tag pair:
             {{ /errors }}
             </ul>
         {{ endif }}
-        {{# Success message #}}
+
         {{ if success }}
             <h2>Success!</h2>
             {{# redirect to="/rsvp/thanks" #}}
         {{ else }}
+
         {{# Start form #}}
         <fieldset>
             <p>
                 <label for="first_name">First Name</label>
-                <input type="text" name="first_name" />
+                <input type="text" name="first_name" value="{{ post }}{{ first_name }}{{ /post }}" />
             </p>
             <p>
                 <label for="last_name">Last Name</label>
-                <input type="text" name="last_name" />
+                <input type="text" name="last_name" value="{{ post }}{{ last_name }}{{ /post }}" />
             </p>
             <p>
                 <label for="email">Email Address</label>
-                <input type="email" name="email" />
+                <input type="email" name="email" value="{{ post }}{{ email }}{{ /post }}" />
             </p>
             <p>
                 <label for="message">Message</label>
-                <textarea name="message" id="message" cols="30" rows="10"></textarea>
+                <textarea name="message" id="message" cols="30" rows="10">{{ post }}{{ message }}{{ /post }}</textarea>
+            </p>
+            <p>
+                <select name="options" id="options">
+                    <option value="">Please select an option</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">Four</option>
+                    <option value="5">Five</option>
+                </select>
             </p>
             <p>
                 <input type="submit" name="submit" value="Submit" />
@@ -117,6 +142,8 @@ The plug-in will automatically log (2) types of datasets for you:
 2. __POST data for each form submission in CSV format__: By default, this will be stored default in the `_logs` directory in a file with the same name as the form. For example, if the parameter `form_name=sample` in the tag pair, a file named `sample.csv` will be created in `_logs`. New form submissions will be appended to this file. If you choose to clear this file, you could simply delete or move it out of the `_logs` directory and the file will be created again on the next form submission.
 
 ## Changelog
+### v1.0
+Initial release!
 ### v0.9
 * Initial public release. Rewrote most of the plugin.
 ### v0.6
