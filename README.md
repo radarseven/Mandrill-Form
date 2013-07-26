@@ -46,6 +46,12 @@ Other config values are a fallback, but can be overrident by the template tag pa
 * `spam_killah_redirect` (string)
 * `success_redirect` (string)
 * `error_redirect` (string)
+* `send_user_email` (bool)
+* `user_email` (string)
+* `user_to_name` (string)
+* `user_subject` (string)
+* `user_html_template` (string)
+* `user_plain_text_template` (string)
 
 ### `success` (boolean)
 This is a boolean based on status of the Mandril API request.
@@ -70,6 +76,12 @@ This is a simple sample of the `mandrill_form` tag pair:
         from_email="test@test.com"
         from_name="Mandril Formm Test"
         subject="Mandrill Form Test"
+        send_user_email="true"
+        user_email="email"
+        user_to_name="first_name"
+        user_html_template=""
+        user_plain_text_template=""
+        user_subject="User Email Test"
         form_id="mandrill-form"
         form_class=""
         html_template="email.html"
@@ -77,7 +89,6 @@ This is a simple sample of the `mandrill_form` tag pair:
         required_fields="first_name|last_name|options"
         required_fields_messages="First Name is a required field.|Last Name is a required field.|Please select an option."
         use_merge_vars="1"
-        send_user_email="false"
         user_email_template_plain_text=""
         user_email_template_html=""
         enable_spam_killah="true"
@@ -142,6 +153,9 @@ The plug-in will automatically log (2) types of datasets for you:
 2. __POST data for each form submission in CSV format__: By default, this will be stored in the `_logs` directory in a file with the same name as the form. For example, if the parameter `form_name=sample` in the tag pair, a file named `sample.csv` will be created in `_logs`. New form submissions will be appended to this file. If you choose to clear this file, you could simply delete or move it out of the `_logs` directory and the file will be created again on the next form submission.
 
 ## Changelog
+
+### v1.1
+* Added user email option.
 
 ### v1.0
 Initial release!
