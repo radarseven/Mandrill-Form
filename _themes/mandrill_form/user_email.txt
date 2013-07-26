@@ -1,0 +1,7 @@
+User Plain Text Email Template
+
+See the MailChimp's Getting Started with Merge Tags [http://kb.mailchimp.com/article/getting-started-with-merge-tags] documentation. Anything you can do there, you can do here!
+
+Sample merge tags:
+*|FIRST_NAME|*
+*|EMAIL|*

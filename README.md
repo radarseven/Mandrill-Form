@@ -46,10 +46,13 @@ Other config values are a fallback, but can be overrident by the template tag pa
 * `spam_killah_redirect` (string)
 * `success_redirect` (string)
 * `error_redirect` (string)
+
 ### `success` (boolean)
 This is a boolean based on status of the Mandril API request.
+
 ### `error` (boolean)
 If API call failed or required fields failed, this will be set to true.
+
 ### `errors`
 If `error` is true, `errors` will contain messages for failed validations or the API failure message.
 
@@ -83,7 +86,6 @@ This is a simple sample of the `mandrill_form` tag pair:
         error_redirect=""
         enable_logging="true"
     }}
-
         {{ if error }}
             <h1>Whoops, there were errors!</h1>
             <ul>
@@ -92,12 +94,10 @@ This is a simple sample of the `mandrill_form` tag pair:
             {{ /errors }}
             </ul>
         {{ endif }}
-
         {{ if success }}
             <h2>Success!</h2>
             {{# redirect to="/rsvp/thanks" #}}
         {{ else }}
-
         {{# Start form #}}
         <fieldset>
             <p>
@@ -139,13 +139,16 @@ This is a simple sample of the `mandrill_form` tag pair:
 The plug-in will automatically log (2) types of datasets for you:
 
 1. __Mandrill API repsonses__: These will be stored by default in `_logs`. Errors will be in a file named `mandrill_error.log` and success responses will be stored in a file named `mandrill_success.log`.
-2. __POST data for each form submission in CSV format__: By default, this will be stored default in the `_logs` directory in a file with the same name as the form. For example, if the parameter `form_name=sample` in the tag pair, a file named `sample.csv` will be created in `_logs`. New form submissions will be appended to this file. If you choose to clear this file, you could simply delete or move it out of the `_logs` directory and the file will be created again on the next form submission.
+2. __POST data for each form submission in CSV format__: By default, this will be stored in the `_logs` directory in a file with the same name as the form. For example, if the parameter `form_name=sample` in the tag pair, a file named `sample.csv` will be created in `_logs`. New form submissions will be appended to this file. If you choose to clear this file, you could simply delete or move it out of the `_logs` directory and the file will be created again on the next form submission.
 
 ## Changelog
+
 ### v1.0
 Initial release!
+
 ### v0.9
 * Initial public release. Rewrote most of the plugin.
+
 ### v0.6
 * Can pre-populate input fields on error with the {{ post }}{{ /post }} tag pair, i.e. {{ post }}{{ email }}{{ /post }} would repopulate the input field named `email`.
 

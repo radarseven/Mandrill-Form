@@ -262,19 +262,6 @@ class Plugin_mandrill_form extends Plugin {
 		}
 
 		/**
-		 * Messages/send 
-		 * @var array Params
-		 */
-		$params = array(
-			'text'       => $plain_text,
-			'html'       => $html,
-			'subject'    => $this->params['subject'],
-			'from_email' => $this->params['from_email'],
-			'from_name'  => $this->params['from_name'],
-			'to'         => $to
-		);
-
-		/**
 		 * Need to replace dashes with underscores for Mandrill merge tags
 		 * @var array
 		 */
@@ -293,9 +280,62 @@ class Plugin_mandrill_form extends Plugin {
 		}
 
 		/**
-		 * Global Merge Vars
+		 * Messages/send 
+		 * @var array Params
 		 */
-		$params['global_merge_vars'] = $_global_merge_vars;
+		$params = array(
+			'to'                => $to,
+			'from_email'        => $this->params['from_email'],
+			'from_name'         => $this->params['from_name'],
+			'subject'           => $this->params['subject'],
+			'text'              => $plain_text,
+			'html'              => $html,
+			'global_merge_vars' => $_global_merge_vars,
+		);
+
+		/**
+		 * Send user email?
+		 */
+		if( $this->params['send_user_email'] && isset( $this->post[$this->params['user_email']] ) )
+		{
+			/**
+			 * User email address
+			 */
+			$user_to[] = array(
+				'name'  => isset( $this->post[$this->params['user_to_name']] ) ? $this->post[$this->params['user_to_name']] : first( $this->params['to_name'] ),
+				'email' => $this->post[$this->params['user_email']],
+			);
+
+			/**
+			 * Get the user templates
+			 */
+			$user_plain_text_template = self::getFile( $this->params['user_plain_text_template'] );
+			$user_html_template       = self::getFile( $this->params['user_html_template'] );
+
+			/**
+			 * Messages/send
+			 * @var array API call params
+			 */
+			$user_params = array(
+				'to'                => $user_to,
+				'from_email'        => $this->params['from_email'],
+				'from_name'         => $this->params['from_name'],
+				'text'              => $user_plain_text_template,
+				'html'              => $user_html_template,
+				'subject'           => $this->params['user_subject'],
+				'global_merge_vars' => $_global_merge_vars,
+			);
+
+			try
+			{
+				$response = $mandrill->messages->send( $user_params, true );
+				$this->handleSuccess( $response, true );
+			}
+			catch( Mandrill_Error $e )
+			{
+				$this->handleError( $e );
+			}
+		}
 
 		/**
 		 * Make API Call
@@ -347,7 +387,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @param  (array) $response The raw API response
 	 * @return none
 	 */
-	protected function handleSuccess( $response = null )
+	protected function handleSuccess( $response = null, $no_redirect = false )
 	{
 		if( is_null( $response ) || ! is_array( $response ) || ! isset( $response[0]) ) return false;
 
@@ -367,6 +407,11 @@ class Plugin_mandrill_form extends Plugin {
 			 */
 			Log::info( json_encode( $response ), 'mandrill', 'handleApiResponse::success' );
 			$this->log( $response, 'success', $this->params, $this->post );
+
+			if( $no_redirect )
+			{
+				return true;
+			}
 			
 			/**
 			 * Check for redirect on success
@@ -673,12 +718,25 @@ class Plugin_mandrill_form extends Plugin {
 		$params['required_fields_messages']         = $this->fetchParam('required_fields_messages', false, false, false, false); // Pipe separated
 		$params['required_fields_messages']         = Helper::pipedStringToArray( $params['required_fields_messages'] );
 		$params['use_merge_vars']                   = $this->fetchParam('use_merge_vars', false, false, true, false); // Use Mandrill merge_vars (bool) flag. Default = false
-		$params['send_user_email']                  = $this->fetchParam('send_user_email', false, false, true, false); // Send user email flag? Default = false
 		$params['enable_spam_killah']               = $this->fetchParam('enable_spam_killah', false, false, true, false); // Enable SPAM Killah?
 		$params['spam_killah_redirect']             = $this->fetchParam('spam_killah_redirect', false, false, false, true);
 		$params['success_redirect']                 = $this->fetchParam('success_redirect', false, false, false, true);
 		$params['error_redirect']                   = $this->fetchParam('error_redirect', false, false, false, true);
 		$params['enable_logging']                   = $this->fetchParam('enable_logging', true, false, true, true );
+
+		/**
+		 * User email params
+		 */
+		$params['send_user_email']                  = $this->fetchParam('send_user_email', false, false, true, false); // Send user email flag? Default = false
+
+		if( $params['send_user_email'] )
+		{
+			$params['user_email']               = $this->fetchParam('user_email', '') != '' ? $this->fetchParam('user_email', '') : $this->config['email_options']['user_email'];
+			$params['user_to_name']             = $this->fetchParam('user_to_name', '', false, false, false) != '' ? $this->fetchParam('user_to_name', '', false, false, false) : $this->config['email_options']['user_to_name'];
+			$params['user_subject']             = $this->fetchParam('user_subject', '', false, false, false) != '' ? $this->fetchParam('user_subject', '', false, false, false) : $this->config['email_options']['user_subject'];
+			$params['user_html_template']       = $this->fetchParam('user_html_template', '', false, false, false) != '' ? $this->fetchParam('user_html_template', '', false, false, false) : $this->config['email_templates']['user_html'];
+			$params['user_plain_text_template'] = $this->fetchParam('user_plain_text_template', '', false, false, false) != '' ? $this->fetchParam('user_plain_text_template', '', false, false, false) : $this->config['email_templates']['user_plain_text'];
+		}
 
 		return $params;
 	}

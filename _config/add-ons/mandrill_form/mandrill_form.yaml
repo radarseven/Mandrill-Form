@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 # Mandrill API Key
 # -----------------------------------------------------------------------------
-api_key: 
+api_key: y6TXHtOOtCVYvt44diAkmA
 
 
 # -----------------------------------------------------------------------------
@@ -29,6 +29,8 @@ email_options:
   msg_header:
   msg_footer:
   use_merge_vars: true
+  user_to_name: 
+  user_to_subject:
 
 
 # -----------------------------------------------------------------------------
@@ -53,3 +55,5 @@ enable_spam_killah: true
 email_templates:
   plain_text: email.txt
   html: email.html
+  user_plain_text: user_email.txt
+  user_email: user_email.html
