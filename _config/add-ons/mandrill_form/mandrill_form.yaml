@@ -56,4 +56,4 @@ email_templates:
   plain_text: email.txt
   html: email.html
   user_plain_text: user_email.txt
-  user_email: user_email.html
+  user_html: user_email.html

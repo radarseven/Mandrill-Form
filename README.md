@@ -9,7 +9,7 @@ This is a work in progres. Feel free to fork and fix bugs if found!
 
 ## Installation
 * Copy `_add-ons/mandrill_form` to into `_add-ons` in the document root of your Statamic site.
-* Copy `_config/_add-ons/mandrill_form` to into `_add-ons` in the document root of your Statamic site.
+* Copy `_config/_add-ons/mandrill_form` to into `_config/add-ons` in the document root of your Statamic site.
 * Copy `_themes/mandrill_form` to into `_themes` in the document root of your Statamic site.
 
 ## Config
@@ -24,7 +24,9 @@ Other config values are a fallback, but can be overrident by the template tag pa
 * `errors`
 
 ## Template Tag Parameters
+
 ### `mandrill_form`
+
 * `form_name` (string)
 * `to_email` (string)(required)
 * `to_name` (string)
@@ -54,12 +56,15 @@ Other config values are a fallback, but can be overrident by the template tag pa
 * `user_plain_text_template` (string)
 
 ### `success` (boolean)
+
 This is a boolean based on status of the Mandril API request.
 
 ### `error` (boolean)
+
 If API call failed or required fields failed, this will be set to true.
 
 ### `errors`
+
 If `error` is true, `errors` will contain messages for failed validations or the API failure message.
 
 ## Usage Examples
@@ -89,8 +94,6 @@ This is a simple sample of the `mandrill_form` tag pair:
         required_fields="first_name|last_name|options"
         required_fields_messages="First Name is a required field.|Last Name is a required field.|Please select an option."
         use_merge_vars="1"
-        user_email_template_plain_text=""
-        user_email_template_html=""
         enable_spam_killah="true"
         spam_killah_redirect=""
         success_redirect=""

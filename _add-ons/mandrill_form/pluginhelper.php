@@ -12,7 +12,7 @@ class Mandrill_form_plugin_helper extends Plugin_mandrill_form
 		/**
 		 * Verify request method and that it's not an empty request
 		 */
-		if( strtoupper( $_SERVER['REQUEST_METHOD'] ) == 'POST' && ! Helper::isEmptyArray( $_POST )  )
+		if( strtoupper( $_SERVER['REQUEST_METHOD'] ) == 'POST' && ! empty( $_POST )  )
 		{
 			return TRUE;
 		}
@@ -33,20 +33,17 @@ class Mandrill_form_plugin_helper extends Plugin_mandrill_form
 	{
 		$post = is_null( $post ) ? $_POST : $post;
 
-		if( ! self::isNotEmptyArray( $post ) )
+		if( empty( $post ) )
 		{
 			return FALSE;
 		}
 
 		foreach( $post as $k => $v )
 		{
-			if( ! empty( $v ) )
-			{
-				/**
-				 * Populate $post with non-empty key/value pairs
-				 */
-				$post[$k] = Request::post( $k );
-			}
+			/**
+			 * Populate $post with key/value pairs
+			 */
+			$post[$k] = Request::post( $k );
 		}
 
 		return $post;
