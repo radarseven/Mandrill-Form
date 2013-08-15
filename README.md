@@ -1,5 +1,5 @@
 # Mandrill Form - Statamic Plug-In
-A simple plug-in for [Statamic](http://statamic.com) CMS to enable users to easily create an simple form, send an email to a configurable email address using the [Mandrill](http://mandrillapp.com) API for email delivery.
+A simple plug-in for [Statamic](http://statamic.com) CMS to enable users to easily create a form, send an email to configurable email address(es) using the [Mandrill](http://mandrillapp.com) API for email delivery and log the results.
 
 This is a work in progres. Feel free to fork and fix bugs if found!
 
