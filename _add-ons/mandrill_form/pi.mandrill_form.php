@@ -20,7 +20,7 @@ class Plugin_mandrill_form extends Plugin {
 	 */
 	public $meta = array(
 		'name'				=> 'Mandrill Form',
-		'version'			=> '0.9',
+		'version'			=> '0.1',
 		'author'			=> 'Michael Reiner | Chad Clark',
 		'author_url'		=> 'http://radarseven.com | http://chadjclark.com/',
 	);
@@ -32,7 +32,7 @@ class Plugin_mandrill_form extends Plugin {
 		/**
 		 * Get the environment
 		 */
-		$this->env = $env = Environment::detect();
+		$this->env = $env = Environment::detect( Config::getAll() );
 
 		/**
 		 * Get add-on config
