@@ -134,7 +134,7 @@ class Plugin_mandrill_form extends Plugin {
 		 */
 		if( $this->env != 'live' )
 		{
-			Log::info( Environment::detect(), 'add-on', 'mandrill' );
+			Log::info( Environment::detect($this->getConfig()), 'add-on', 'mandrill' );
 			Log::info( json_encode( $this->post ), 'add-on', 'mandrill' );
 		}
 
