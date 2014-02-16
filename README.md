@@ -1,10 +1,10 @@
-# Mandrill Form - Statamic Plug-In
+# Manform - A Statamic CMS Plugin
 A simple plug-in for [Statamic](http://statamic.com) CMS to enable users to easily create a form, send an email to configurable email address(es) using the [Mandrill](http://mandrillapp.com) API for email delivery and log the results.
 
 This is a work in progres. Feel free to fork and fix bugs if found!
 
 ## Requirements
-* [Statamic](http://statamic.com) 1.5+
+* [Statamic](http://statamic.com) 1.7+
 * [Mandrill](http://mandrillapp.com) API key
 
 ## Installation
@@ -17,15 +17,18 @@ Set your Mandrill API key in the plugin config at `_config/add-ons/mandrill_form
 
 Other config values are a fallback, but can be overrident by the template tag pair parameters below.
 
-## Template Tags
-* `mandrill_form`
-* `success`
+## Template Tag Pairs
+* `{{ manform }}{{ /manform }}`
+* `{{ manform:success }}{{ /manform:success }}`
 * `error`
-* `errors`
+* `{{ manform:errors }}{{ missing }}{{ error }}{{ /missing }}{{ /manform:errors }}`
+
+## Template Single Tags
+* `{{ manform:post name="" }}` : Returns the POST value submitted previously.
 
 ## Template Tag Parameters
 
-### `mandrill_form`
+### `manform`
 
 * `form_name` (string)
 * `to_email` (string)(required)
@@ -72,7 +75,7 @@ If `error` is true, `errors` will contain messages for failed validations or the
 This is a simple sample of the `mandrill_form` tag pair:
 
     <h1>Mandrill Form Sample Template</h1>
-    {{ mandrill_form
+    {{ manform
         form_name="sample"
         to_email="test@test.com"
         to_name="Testing"

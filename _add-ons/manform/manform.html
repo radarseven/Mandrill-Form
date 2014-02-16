@@ -1,5 +1,21 @@
 <h1>Mandrill Form Sample Template</h1>
-{{ mandrill_form
+{{ if manform:success }}
+<p><strong>Booyah!</strong></p>
+{{ endif }}
+
+{{ manform:errors }}
+	
+	<h4>Please correct the following submission errors:</h4>
+
+	{{ if missing }}
+		{{ missing }}
+			<p>{{ error }}</p>
+		{{ /missing }}
+	{{ endif }}
+
+{{ /manform:errors }}
+
+{{ manform
 	form_name="sample"
 	to_email="test@test.com"
 	to_name="Testing"
@@ -46,19 +62,19 @@
 	<fieldset>
 		<p>
 			<label for="first_name">First Name</label>
-			<input type="text" name="first_name" value="{{ post }}{{ first_name }}{{ /post }}" />
+			<input type="text" name="first_name" value="{{ manform:post name="first_name" }}" />
 		</p>
 		<p>
 			<label for="last_name">Last Name</label>
-			<input type="text" name="last_name" value="{{ post }}{{ last_name }}{{ /post }}" />
+			<input type="text" name="last_name" value="" />
 		</p>
 		<p>
 			<label for="email">Email Address</label>
-			<input type="email" name="email" value="{{ post }}{{ email }}{{ /post }}" />
+			<input type="email" name="email" value="" />
 		</p>
 		<p>
 			<label for="message">Message</label>
-			<textarea name="message" id="message" cols="30" rows="10">{{ post }}{{ message }}{{ /post }}</textarea>
+			<textarea name="message" id="message" cols="30" rows="10">{{ manform:post name="message" }}</textarea>
 		</p>
 		<p>
 			<select name="options" id="options">
@@ -78,4 +94,4 @@
 
 	{{ endif }}
 
-{{ /mandrill_form }}
+{{ /manform }}

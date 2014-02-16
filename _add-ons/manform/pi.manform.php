@@ -1,31 +1,29 @@
 <?php
 
 /**
- * Require plugin helper
+ * Require the Mandrill API library.
  */
-require_once( 'pluginhelper.php' );
-use Mandrill_form_plugin_helper as Helper;
-
-/**
- * Require Mandrill API class
- */
-require_once( 'lib/Mandrill.php' );
+require_once( __DIR__ . '/lib/Mandrill.php' );
 
 
-class Plugin_mandrill_form extends Plugin {
+class Plugin_manform extends Plugin {
 
 	/**
 	 * Meta data
 	 * @var array
 	 */
 	public $meta = array(
-		'name'				=> 'Mandrill Form',
-		'version'			=> '0.1',
+		'name'				=> 'Manform',
+		'description'		=> 'A simple Mandrill email form for Statamic CMS.',
+		'version'			=> '0.9',
 		'author'			=> 'Michael Reiner | Chad Clark',
 		'author_url'		=> 'http://radarseven.com | http://chadjclark.com/',
 	);
 
-	function __construct()
+	/**
+	 * Constructor
+	 */
+	public function __construct()
 	{
 		parent::__construct();
 
@@ -42,7 +40,7 @@ class Plugin_mandrill_form extends Plugin {
 		/**
 		 * Filter the POST data
 		 */	
-		$this->post = Helper::getPost();
+		$this->post = $this->getPost();
 
 		/**
 		 * Output buffer
@@ -54,6 +52,7 @@ class Plugin_mandrill_form extends Plugin {
 		 */
 		$this->vars = false;
 	}
+
 
 	/**
 	 * Index
@@ -69,7 +68,7 @@ class Plugin_mandrill_form extends Plugin {
 		/**
 		 * Check for POST
 		 */
-		if( Helper::isPost() )
+		if( $this->isPost() )
 		{
 			/**
 			 * POST, pass to handler
@@ -81,7 +80,8 @@ class Plugin_mandrill_form extends Plugin {
 		 * Check for session `status`
 		 * This would only be set if there were a successfull submission and redirected to self without POST
 		 */
-		if( $this->session->exists( 'mandrill_form_status' ) && $this->session->get( 'mandrill_form_status' ) )
+		//if( $this->session->exists( 'manform' ) && $this->session->get( 'manform' ) )
+		if( Session::getFlash('manform:success') )
 		{
 			/**
 			 * Set the template var `success` to true
@@ -91,7 +91,7 @@ class Plugin_mandrill_form extends Plugin {
 			/**
 			 * Delete the `mandrill_form_status` session key
 			 */
-			$this->session->delete( 'mandrill_form_status' );
+			//$this->session->delete( 'mandrill_form_status' );
 		}
 
 		/**
@@ -102,10 +102,58 @@ class Plugin_mandrill_form extends Plugin {
 	}
 
 	/**
+	 * Return the status of the request.
+	 * @return (boolean)
+	 */
+	public function success()
+	{
+		return Session::getFlash('manform:success');
+	}
+
+	/**
+	 * Return errors, if present in Session flash.
+	 * @return (mixed)
+	 */
+	public function errors()
+	{
+		if( $errors = Session::getFlash('manform') )
+		{
+			return Parse::template($this->content, $errors);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Return presence of errors
+	 * @return (boolean)
+	 */
+	public function has_errors()
+	{
+		return ( Session::getFlash('manform:success')  ) ? true : false;
+	}
+
+	/**
+	 * Return a POST value saved in Session flash.
+	 * @return (string) POST value of specified key from $_POST.
+	 */
+	public function post()
+	{
+		$key = $this->fetchParam('name', false);
+
+		if( $key )
+		{
+			return Session::getFlash("manform:post:{$key}");
+		}
+
+		return false;
+	}
+
+	/**
 	 * If form is POSTed, handle it.
 	 * @return none
 	 */
-	protected function handlePost()
+	private function handlePost()
 	{
 		/**
 		 * Assign POST data to the template tag pair `post`
@@ -124,6 +172,9 @@ class Plugin_mandrill_form extends Plugin {
 		 * <input type="text" name="first_name" value="{{ post }}{{ first_name }}{{ /post }}" />
 		 * </pre>
 		 */
+		
+		$errors = array();
+
 		foreach( $this->post as $k => $v )
 		{
 			$this->vars['post'][] = array( $k => $v );
@@ -172,7 +223,7 @@ class Plugin_mandrill_form extends Plugin {
 				 * Simple validation for non-empty fields only
 				 * @todo Add more sohpisticated validation
 				 */
-				if( in_array( $key, $this->params['required_fields'] ) && ! Helper::isValid( $value ) )
+				if( in_array( $key, $this->params['required_fields'] ) && ! $this->isValid( $value ) )
 				{
 					/**
 					 * Look for a corresponding required field message in params
@@ -183,7 +234,9 @@ class Plugin_mandrill_form extends Plugin {
 					/**
 					 * Push to `errors` array
 					 */
-					$errors[]['error'] = $msg;
+					$errors['missing'][] = array(
+						'error' => $msg
+					);
 				}
 			}
 
@@ -202,6 +255,16 @@ class Plugin_mandrill_form extends Plugin {
 				 */
 				$this->vars['errors'] = $errors;
 
+				$errors['success'] = false;
+
+				$errors['post'] = $this->post;
+
+				/**
+				 * Set session flash for errors
+				 */
+				Session::setFlash( 'manform', $errors );
+				URL::redirect( URL::getCurrent() );
+
 				return false;
 			}
 		}
@@ -219,7 +282,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @param  (array) $params 			Params from tag pair
 	 * @return (array) $response 		Response from Mandrill API
 	 */
-	protected function sendEmail()
+	private function sendEmail()
 	{
 		/**
 		 * Send message via Mandrill API
@@ -265,7 +328,7 @@ class Plugin_mandrill_form extends Plugin {
 		 * Need to replace dashes with underscores for Mandrill merge tags
 		 * @var array
 		 */
-		$underscore_post = Helper::replaceDashes( $this->post );
+		$underscore_post = $this->replaceDashes( $this->post );
 
 		/**
 		 * Build out the merge_vars array
@@ -358,7 +421,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @param  (string) $file   Filename to get.
 	 * @return (mixed)        	Returns file if exists, otherwse false.
 	 */
-	protected function getFile( $file = null )
+	private function getFile( $file = null )
 	{
 		if( is_null( $file ) || is_array( $file ) ) return false;
 
@@ -387,7 +450,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @param  (array) $response The raw API response
 	 * @return none
 	 */
-	protected function handleSuccess( $response = null, $no_redirect = false )
+	private function handleSuccess( $response = null, $no_redirect = false )
 	{
 		if( is_null( $response ) || ! is_array( $response ) || ! isset( $response[0]) ) return false;
 
@@ -429,7 +492,8 @@ class Plugin_mandrill_form extends Plugin {
 			/**
 			 * Set session key `mandrill_form_status` to true
 			 */
-			$this->session->set( 'mandrill_form_status', true );
+			//$this->session->set( 'mandrill_form_status', true );
+			Session::setFlash('manform', array('success' => true) );
 
 			/**
 			 * Redirect to self without POST data to prevent multiple form submissions after success
@@ -444,7 +508,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @param  Exception $error 	Exception object
 	 * @return none
 	 */
-	protected function handleError( Exception $error )
+	private function handleError( Exception $error )
 	{
 		if( is_null( $error ) || ! is_object( $error ) )
 		{
@@ -508,7 +572,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @param  (array) $post     POST data.
 	 * @return none
 	 */
-	protected function log( $response = null, $status = null, $params = null, $post = null )
+	private function log( $response = null, $status = null, $params = null, $post = null )
 	{
 		if( is_null( $response ) || is_null( $status ) || is_null( $params ) || is_null( $post ) || ! $params['enable_logging'] )
 		{
@@ -592,7 +656,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * Build and return the tag pair output
 	 * @return (string) Tag pair output
 	 */
-	protected function getOutput()
+	private function getOutput()
 	{
 		/**
 		 * Process template vars
@@ -635,7 +699,7 @@ class Plugin_mandrill_form extends Plugin {
 		/**
 		 * Set the action to the current URL
 		 */
-		$output .= ' action="' . url::getCurrent() . '"';
+		$output .= ' action="' . URL::getCurrent() . '"';
 
 		/**
 		 * Add class name if present in params
@@ -685,7 +749,7 @@ class Plugin_mandrill_form extends Plugin {
 	 * @return (array)
 	 */
 	
-	protected function fetchParams()
+	private function fetchParams()
 	{
 		/**
 		 * Tag parameters
@@ -701,9 +765,9 @@ class Plugin_mandrill_form extends Plugin {
 
 		$params['form_name']                        = $this->fetchParam('form_name', false, false, false, true) ? $this->fetchParam('form_name', false, false, false, true) : Url::getCurrent();
 		$params['to_email']                         = $this->fetchParam('to_email', '') != '' ? $this->fetchParam('to_email', '') : $this->config['email_options']['to_email'];
-		$params['to_email']                         = Helper::pipedStringToArray( $params['to_email'] );
+		$params['to_email']                         = $this->pipedStringToArray( $params['to_email'] );
 		$params['to_name']                          = $this->fetchParam('to_name', '', false, false, false) != '' ? $this->fetchParam('to_name', '', false, false, false) : $this->config['email_options']['to_name'];
-		$params['to_name']                          = Helper::pipedStringToArray( $params['to_name'] );
+		$params['to_name']                          = $this->pipedStringToArray( $params['to_name'] );
 		$params['cc']                               = $this->fetchParam('cc', '') != '' ? $this->fetchParam('cc', '') : $this->config['email_options']['cc'];
 		$params['bcc']                              = $this->fetchParam('bcc', '') != '' ? $this->fetchParam('bcc', '') : $this->config['email_options']['bcc'];
 		$params['from_email']                       = $this->fetchParam('from_email', '') != '' ? $this->fetchParam('from_email', '') : $this->config['email_options']['from_email'];
@@ -714,9 +778,9 @@ class Plugin_mandrill_form extends Plugin {
 		$params['html_template']                    = $this->fetchParam('html_template', '', false, false, false) != '' ? $this->fetchParam('html_template', '', false, false, false) : $this->config['email_templates']['html'];
 		$params['plain_text_template']              = $this->fetchParam('plain_text_template', '', false, false, false) != '' ? $this->fetchParam('plain_text_template', '', false, false, false) : $this->config['email_templates']['plain_text'];
 		$params['required_fields']                  = $this->fetchParam('required_fields', false, false, false, true); // Pipe separated
-		$params['required_fields']                  = Helper::pipedStringToArray( $params['required_fields'] );
+		$params['required_fields']                  = $this->pipedStringToArray( $params['required_fields'] );
 		$params['required_fields_messages']         = $this->fetchParam('required_fields_messages', false, false, false, false); // Pipe separated
-		$params['required_fields_messages']         = Helper::pipedStringToArray( $params['required_fields_messages'] );
+		$params['required_fields_messages']         = $this->pipedStringToArray( $params['required_fields_messages'] );
 		$params['use_merge_vars']                   = $this->fetchParam('use_merge_vars', false, false, true, false); // Use Mandrill merge_vars (bool) flag. Default = false
 		$params['enable_spam_killah']               = $this->fetchParam('enable_spam_killah', false, false, true, false); // Enable SPAM Killah?
 		$params['spam_killah_redirect']             = $this->fetchParam('spam_killah_redirect', false, false, false, true);
@@ -740,6 +804,148 @@ class Plugin_mandrill_form extends Plugin {
 
 		return $params;
 	}
+
+	/*
+	|--------------------------------------------------------------------------
+	| Internal Helper Functions
+	|--------------------------------------------------------------------------
+	*/
+
+	/**
+	 * Check if request is a POST request
+	 * @param  array
+	 * @return boolean
+	 */
+	private function isPost()
+	{
+		/**
+		 * Verify request method and that it's not an empty request
+		 */
+		if( strtoupper( $_SERVER['REQUEST_METHOD'] ) == 'POST' && ! empty( $_POST )  )
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+
+	/**
+	 * Get POST array and return array with no empty values.
+	 * @param  array       Raw $_POST array
+	 * @return array       Filtered $_POST array
+	 */
+	private function getPost( $post = null )
+	{
+		$post = is_null( $post ) ? $_POST : $post;
+
+		if( empty( $post ) )
+		{
+			return FALSE;
+		}
+
+		foreach( $post as $k => $v )
+		{
+			/**
+			 * Populate $post with key/value pairs
+			 */
+			$post[$k] = Request::post( $k );
+		}
+
+		return $post;
+	}
+
+
+	/**
+	 * Check if an array is empty
+	 * @param  [mixed]  $array 
+	 * @return boolean
+	 */
+	private function isNotEmptyArray( $array )
+	{
+		if( is_array( $array ) && ! $this->isEmptyArray( $array ) )
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+
+	/**
+	 * Replace dashes with underscores in an array
+	 * @param  array $arr
+	 * @return (array)      Array with replace values
+	 */
+	private function replaceDashes( $arr = null )
+	{
+		if( is_null( $arr ) || ! is_array( $arr ) )
+		{
+			return array();
+		}
+		
+	    foreach ( $arr as $key => $val ) {
+	        if ( strpos( $key, "-" ) !== FALSE )
+	        {
+	            $newKey = str_replace( "-", "_", $key );
+	            $arr[$newKey] = $val;
+	            unset( $arr[$key] );
+	        }
+	    }
+
+	    return $arr;
+	}
+
+
+	/**
+	 * Converted a pipe delimited string to an array
+	 * @param (string) $string 
+	 * @param (array) $params Tag params
+	 * @return (array)
+	 */
+	private function pipedStringToArray( $string )
+	{
+		if( ! is_string( $string ) || is_array( $string ) )
+		{
+			return $string;
+		}
+
+		if( strpos( $string, '|' ) !== false )
+		{
+			$array = explode( '|', $string );
+			return $array;
+		}
+
+		return array( $string );
+	}
+
+
+	/**
+	 * Simple vaidation method
+	 * @param  mixed  $data Data to validate
+	 * @return boolean
+	 */
+	private function isValid( $data )
+	{
+		switch( true )
+		{
+			case empty( $data ):
+			case is_null( $data ):
+			case false:
+			case 0:
+			case '':
+				return false;
+				break;
+			default:
+				return true;
+				break;
+		}
+	}
+
 }
 /**
  * END of file
